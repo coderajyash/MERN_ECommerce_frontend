@@ -1,207 +1,215 @@
-import React,{useState,useEffect} from 'react';
-import { Link } from 'react-router-dom';
-import { isAuthenticated } from '../auth/helper';
-import Base from '../core/Base';
-import {createaProduct, getCategories, getProduct,updateProduct} from './helper/adminapicall'
+import React, { useState, useEffect } from "react";
+import Base from "../core/Base";
+import { Link } from "react-router-dom";
+import {
+  getCategories,
+  getProduct,
+  updateProduct
+} from "./helper/adminapicall";
+import { isAuthenticated } from "../auth/helper/index";
 
+const UpdateProduct = ({ match }) => {
+  const { user, token } = isAuthenticated();
 
+  const [values, setValues] = useState({
+    name: "",
+    description: "",
+    price: "",
+    stock: "",
+    photo: "",
+    categories: [],
+    category: "",
+    loading: false,
+    error: "",
+    createdProduct: "",
+    getaRedirect: false,
+    formData: ""
+  });
 
-const UpdateProduct = ({match})=>{
+  const {
+    name,
+    description,
+    price,
+    stock,
+    categories,
+    category,
+    loading,
+    error,
+    createdProduct,
+    getaRedirect,
+    formData
+  } = values;
 
-    const {user,token} = isAuthenticated()
-   
-    const [values,setValues] = useState({
-        name: '',
-        description: '',
-        price:'',
-        stock: '',
-        photo: '',
-        categories: [],
-        category:'',
-        error:'',
-        loading:false,
-        getaRedirect:false,
-        createdProduct:'',
-        formData:''
-    })
+  const preload = productId => {
+    getProduct(productId).then(data => {
+      //console.log(data);
+      if (data.error) {
+        setValues({ ...values, error: data.error });
+      } else {
+        preloadCategories();
+        setValues({
+          ...values,
+          name: data.name,
+          description: data.description,
+          price: data.price,
+          category: data.category._id,
+          stock: data.stock,
+          formData: new FormData()
+        });
+      }
+    });
+  };
 
-    const {name,description,price,stock,formData,error,photo,categories,category,createdProduct,getaRedirect,loading} = values
+  const preloadCategories = () => {
+    getCategories().then(data => {
+      if (data.error) {
+        setValues({ ...values, error: data.error });
+      } else {
+        setValues({
+          categories: data,
+          formData: new FormData()
+        });
+      }
+    });
+  };
 
-    const preload = (productId)=>{
+  useEffect(() => {
+    preload(match.params.productId);
+  }, []);
 
-      getProduct(productId).then(data=>{
-        if(data.error){
-          setValues({...values,error:data.error})
-        }else{
-          setValues({...values,
-            name:data.name,
-            description:data.description,
-            price:data.price,
-            category:data.category._id,
-            stock:data.stock,
-            formData: new FormData(),
-           
-        })
-        preloadCategories()
+  //TODO: work on it
+  const onSubmit = event => {
+    event.preventDefault();
+    setValues({ ...values, error: "", loading: true });
+
+    updateProduct(match.params.productId, user._id, token, formData).then(
+      data => {
+        if (data.error) {
+          setValues({ ...values, error: data.error });
+        } else {
+          setValues({
+            ...values,
+            name: "",
+            description: "",
+            price: "",
+            photo: "",
+            stock: "",
+            loading: false,
+            createdProduct: data.name
+          });
         }
-      })
-      
-    }
-    const preloadCategories = () => {
-        getCategories().then(data => {
-            if(data.error){
-          setValues({...values,error:data.error})
-            }else{
-                setValues({
-                    categories:data,
-                    formData: new FormData()
-                })
-            }
-        })
-    }
+      }
+    );
+  };
 
+  const handleChange = name => event => {
+    const value = name === "photo" ? event.target.files[0] : event.target.value;
+    formData.set(name, value);
+    setValues({ ...values, [name]: value });
+  };
 
-    useEffect(()=>{
-      preload(match.params.productId)
-    },[])
+  const successMessage = () => (
+    <div
+      className="alert alert-success mt-3"
+      style={{ display: createdProduct ? "" : "none" }}
+    >
+      <h4>{createdProduct} updated successfully</h4>
+    </div>
+  );
 
-    const successMessage = () =>{
-      return(
-      <div className="alert alert-success mt-3"
-      style = {{ display : createdProduct? "" : "none"}}
-      ><h4> Product Updated Successfully </h4>
+  const createProductForm = () => (
+    <form>
+      <span>Post photo</span>
+      <div className="form-group m-2">
+        <label className="btn btn-block btn-primary">
+          <input
+            onChange={handleChange("photo")}
+            type="file"
+            name="photo"
+            accept="image"
+            placeholder="choose a file"
+          />
+        </label>
       </div>
-      )
-    }
+      <div className="form-group m-2">
+        <input
+          onChange={handleChange("name")}
+          name="photo"
+          className="form-control"
+          placeholder="Name"
+          value={name}
+        />
+      </div>
+      <div className="form-group m-2">
+        <textarea
+          onChange={handleChange("description")}
+          name="photo"
+          className="form-control"
+          placeholder="Description"
+          value={description}
+        />
+      </div>
+      <div className="form-group m-2">
+        <input
+          onChange={handleChange("price")}
+          type="number"
+          className="form-control"
+          placeholder="Price"
+          value={price}
+        />
+      </div>
+      <div className="form-group m-2">
+        <select
+          onChange={handleChange("category")}
+          className="form-control"
+          placeholder="Category"
+        >
+          <option>Select</option>
+          {categories &&
+            categories.map((cate, index) => (
+              <option key={index} value={cate._id}>
+                {cate.name}
+              </option>
+            ))}
+        </select>
+      </div>
+      <div className="form-group m-2">
+        <input
+          onChange={handleChange("stock")}
+          type="number"
+          className="form-control"
+          placeholder="Stock"
+          value={stock}
+        />
+      </div>
 
-    const errorMessage = () =>{
-     if(error){ return (
-       <div className="alert alert-danger mt-3"><h4> Product Update Unsuccessful </h4>
-      </div>)
-    }
-    }
+      <button
+        type="submit"
+        onClick={onSubmit}
+        className="btn btn-outline-success m-2"
+      >
+        Update Product
+      </button>
+    </form>
+  );
 
-
-    const onSubmit = (event) =>{
-        event.preventDefault()
-        setValues({ ...values,error:"",loading:true})
-        updateProduct(match.params.productId,user._id, token,formData).
-        then(data=>{
-          if(data.error){
-            setValues({...values,error:data.error})
-          }else{
-            setValues({
-              ...values,
-              name: '',
-          description: '',
-          price:'',
-          stock: '',
-           photo: '',
-          
-          loading:false,
-          
-          createdProduct:data.name,
-         
-            })
-          }
-        })
-    }
-
-    const handleChange = (name)=>event =>{
-      const value = name ==="photo" ? event.target.files[0] : event.target.value //file[0] gives the path of the file
-      formData.set(name, value)
-      setValues({ ...values,[name]:value})
-    }
-
-    const createProductForm = () => (
-        <form >
-          <span>Post photo</span>
-          <div className="form-group">
-            <label className="btn btn-block rounded">
-              <input
-                onChange={handleChange("photo")}
-                type="file"
-                name="photo"
-                accept="image"
-                placeholder="choose a file"
-                className="mb-2"
-              />
-            </label>
-          </div>
-          <div className="form-group">
-            <input
-              onChange={handleChange("name")}
-              name="photo"
-              className="form-control mb-2"
-              placeholder="Name"
-              value={name}
-            />
-          </div>
-          <div className="form-group">
-            <textarea
-              onChange={handleChange("description")}
-              name="photo"
-              className="form-control mb-2"
-              placeholder="Description"
-              value={description}
-            />
-          </div>
-          <div className="form-group">
-            <input
-              onChange={handleChange("price")}
-              type="number"
-              className="form-control mb-2"
-              placeholder="Price"
-              value={price}
-            />
-          </div>
-          <div className="form-group">
-            <select
-              onChange={handleChange("category")}
-              className="form-control mb-2"
-              placeholder="Category"
-            >
-              <option>Select</option>
-
-              {categories && categories.map((cate,index)=>{
-                  return <option key = {index} value={cate._id}>{cate.name}</option>
-              })}
-
-            </select>
-          </div>
-          <div className="form-group">
-            <input
-              onChange={handleChange("stock")}
-              type="number"
-              className="form-control mb-2"
-              placeholder="Quantity"
-              value={stock}
-            />
-          </div>
-          
-          <button type="submit" onClick={onSubmit} className="btn btn-outline-success mb-2 rounded">
-            Update
-          </button>
-        </form>
-      );
-
-
-
-    return (
-        <Base title="Update Product" description="Make changes and update existing product" className="container bg-info p-4">
-        <h2 className="text-white">Update A Product</h2>
-        <div className="row text-white bg-white rounded">
+  return (
+    <Base
+      title="Update a Product"
+      description=""
+      className="container  p-4"
+    >
+      <Link to="/admin/dashboard" className="btn btn-md btn-primary m-3">
+        Admin Home
+      </Link>
+      <div className="row bg-light text-dark rounded">
         <div className="col-md-8 offset-md-2">
-        {successMessage()}
-        {errorMessage()}
-        {createProductForm()}
-        <Link className="btn btn-sm btn-info mb-3 rounded mt-2" to="/admin/dashboard">Back to Admin Home</Link>
+          {successMessage()}
+          {createProductForm()}
         </div>
-        </div>
-        
-        </Base>
-    )
-    
-}
+      </div>
+    </Base>
+  );
+};
 
 export default UpdateProduct;

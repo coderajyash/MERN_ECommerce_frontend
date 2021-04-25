@@ -2,21 +2,15 @@ import React from "react";
 import { API } from "../../backend";
 
 const ImageHelper = ({ product }) => {
-
-  var imageurl
-
-
-  if (product.product._id === undefined || product.product._id ==='') { imageurl = `https://1080motion.com/wp-content/uploads/2018/06/NoImageFound.jpg.png` }
-  else imageurl = `${API}/product/photo/${product.product._id}`
-
-
-  
+  const imageurl = product
+    ? `${API}/product/photo/${product._id}`
+    : `https://images.pexels.com/photos/3561339/pexels-photo-3561339.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=650&w=940`;
   return (
-    <div className="rounded border border-success p-2">
+    <div className="rounded border border-primary p-2">
       <img
         src={imageurl}
         alt="photo"
-        style={{ maxHeight: "100%", maxWidth: "100%" }}
+        style={{ maxHeight: "50%", maxWidth: "50%" }}
         className="mb-3 rounded"
       />
     </div>

@@ -1,8 +1,9 @@
-import React from 'react';
-export default function App(){
+import React from "react";
+
+export default function App() {
   return (
     <div>
-    <h1>Not used</h1>
+      <h1>Hi</h1>
     </div>
-  )
+  );
 }

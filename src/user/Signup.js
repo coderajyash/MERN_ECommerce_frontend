@@ -42,10 +42,10 @@ const Signup = () => {
   const signUpForm = () => {
     return (
       <div className="row">
-        <div className="col-md-6 offset-sm-3 text-left">
+        <div className="col-md-6 offset-sm-3 text-left bg-light rounded">
           <form>
-            <div className="form-group">
-              <label className="text-light">Name</label>
+            <div className="form-group m-2">
+              <label className="text-dark">Name</label>
               <input
                 className="form-control"
                 onChange={handleChange("name")}
@@ -53,8 +53,8 @@ const Signup = () => {
                 value={name}
               />
             </div>
-            <div className="form-group">
-              <label className="text-light">Email</label>
+            <div className="form-group m-2">
+              <label className="text-dark">Email</label>
               <input
                 className="form-control"
                 onChange={handleChange("email")}
@@ -63,8 +63,8 @@ const Signup = () => {
               />
             </div>
 
-            <div className="form-group">
-              <label className="text-light">Password</label>
+            <div className="form-group m-2">
+              <label className="text-dark">Password</label>
               <input
                 onChange={handleChange("password")}
                 className="form-control"
@@ -72,7 +72,7 @@ const Signup = () => {
                 value={password}
               />
             </div>
-            <button onClick={onSubmit} className="btn btn-success btn-block">
+            <button onClick={onSubmit} className="btn btn-success btn-block m-2 rounded">
               Submit
             </button>
           </form>
@@ -90,7 +90,7 @@ const Signup = () => {
             style={{ display: success ? "" : "none" }}
           >
             New account was created successfully. Please
-            <Link to="/signin">Login Here</Link>
+            <Link to="/signin" className="btn btn-primary rounded">Login Here</Link>
           </div>
         </div>
       </div>
@@ -113,11 +113,11 @@ const Signup = () => {
   };
 
   return (
-    <Base title="Sign up page" description="A page for user to sign up!">
+    <Base title="Sign up" description="Get Started">
       {successMessage()}
       {errorMessage()}
       {signUpForm()}
-      <p className="text-white text-center">{JSON.stringify(values)}</p>
+      
     </Base>
   );
 };
