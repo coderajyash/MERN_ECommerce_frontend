@@ -1,8 +1,16 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import Base from './Base';
 import image from '../dev.png'
+import { useState } from 'react';
 
 const Contact =() =>{
+ const [obj,setObj] = useState({})
+useEffect(() => {
+  fetch('https://api.covid19india.org/data.json',{method: 'GET'})
+  .then(response =>console.log(response))
+  
+},[])
+
 return (
     <Base title="Developer Page" description="Details">
     <div className="row">
@@ -10,6 +18,7 @@ return (
     <div className="col-6">
     <div className="d-flex justify-content-center">
     <img src={image} style={{ maxHeight: "60%", maxWidth: "60%" }} className="border border-primary p-2 rounded m-4"></img></div>
+    
     </div>
     <div className="col-6">
     <ul class="list-group m-5">

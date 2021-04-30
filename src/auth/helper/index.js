@@ -1,4 +1,5 @@
 import { API } from "../../backend";
+import { cartEmpty } from "../../core/helper/cartHelper";
 
 
 export const signup = user => {
@@ -39,6 +40,10 @@ export const authenticate = (data, next) => {
 };
 
 export const signout = next => {
+  if (typeof window !== undefined){
+    localStorage.removeItem("cart")
+    
+  }  
   if (typeof window !== "undefined") {
     localStorage.removeItem("jwt");
     next();

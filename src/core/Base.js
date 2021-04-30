@@ -19,13 +19,13 @@ const Base = ({
       </div>
       <div className={className}>{children}</div>
     </div>
-    <footer className="footer bg-dark mt-auto py-2" style={{minHeight:'10vh',marginTop:'auto'}}>
+    <footer className="footer bg-dark mt-auto py-2" style={{marginTop:'auto'}}>
       <div className="container-fluid text-white text-center py-3">
         <h6>Made with <i class="fas fa-heart"></i></h6>
         <Link className="text-dark btn btn-warning mt-2"
         to="/contact">Contact Developer</Link>
       </div>
-      
+      <p className="text-muted mt-2">Login using admin account for exploring features : admin@gmail.com || 1234</p>
     </footer>
   </div>
 );

@@ -24,12 +24,13 @@ export default function Home() {
   }, []);
 
   return (
-    <Base title="Kameez" description="Welcome to the finest collection of Topwear">
+    <Base title="GARB" description="Welcome to the finest collection of Topwear">
       <div className="row text-center">
         <hr></hr>
         <br></br>
         <div className="row">
           {products.map((product, index) => {
+          
             return (
               <div key={index} className="col-3 mb-4">
                 <Card product={product} />

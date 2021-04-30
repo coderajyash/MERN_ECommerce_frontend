@@ -47,6 +47,7 @@ const ManageProducts = () => {
           
 
           {products.map((product, index) => {
+          
             return (
               <div key={index} className="row text-center m-2 border border-primary bg-light ">
                 <div className="col-4">

@@ -3,7 +3,7 @@ import "../styles.css";
 import { API } from "../backend";
 import Base from "./Base";
 import Card from "./Card";
-import { loadCart } from "./helper/cartHelper";
+import { loadCart,cartEmpty } from "./helper/cartHelper";
 //import Payment from "./Payment";
 
 const Cart = () => {
@@ -46,12 +46,15 @@ const Cart = () => {
   };
   const getAmount = () =>{
     let amount = 0
+    if(products !== undefined){
     products.map((product) =>{
       amount = amount + product.price
-      
-    })
+       })}
+       
     return amount
   }
+
+
 
   return (
     <Base title="Cart Page" description="Ready to checkout">
@@ -78,7 +81,9 @@ const Cart = () => {
         getAmount()
       }</h4></div>
        
-       <button className="btn btn-primary rounded mt-3 mr-3">Checkout</button>
+       <button onClick={()=>{
+         alert("Purchase Successful")
+       }} className="btn btn-primary rounded mt-3 mr-3">Purchase</button>
        </div>
         </div>
         </div>
