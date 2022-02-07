@@ -3,14 +3,6 @@ import Base from './Base';
 import image from '../dev.png'
 import { useState } from 'react';
 
-const Contact =() =>{
- const [obj,setObj] = useState({})
-useEffect(() => {
-  fetch('https://api.covid19india.org/data.json',{method: 'GET'})
-  .then(response =>console.log(response))
-  
-},[])
-
 return (
     <Base title="Developer Page" description="Details">
     <div className="row">
